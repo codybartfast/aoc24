@@ -14,8 +14,8 @@ left_col, right_col = zip(*unsorted_pairs)
 pairs = zip(sorted(left_col), sorted(right_col))
 answer1 = sum(abs(left - right) for (left, right) in pairs)
 
-right_counts = dict(Counter(right_col))
-answer2 = sum(left * right_counts.get(left, 0) for left in left_col)
+right_counts = Counter(right_col)
+answer2 = sum(left * right_counts[left] for left in left_col)
 
 print(f'Part 1: {answer1}')
 print(f'Part 2: {answer2}')
