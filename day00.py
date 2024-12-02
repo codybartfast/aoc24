@@ -1,21 +1,19 @@
-from collections import Counter
 
 def text():
-    with open(f'./input/2024/day01/{input_name}.txt', 'r') as file:
+    with open(f'./input/2024/day00/{input_name}.txt', 'r') as file:
         return file.read().strip()
 
+def lines(): return text().splitlines()
+
 def parse(line):
-    return [int(id) for id in line.split()]
+    return line
 
-input_name = 'input'
+input_name = 'test1'
 
-unsorted_pairs = (parse(line) for line in text().splitlines())
-left_col, right_col = zip(*unsorted_pairs)
-pairs = zip(sorted(left_col), sorted(right_col))
-answer1 = sum(abs(left - right) for (left, right) in pairs)
+items = [parse(line) for line in lines()]
 
-right_counts = Counter(right_col)
-answer2 = sum(left * right_counts[left] for left in left_col)
+ans1 = '\n'.join([str(item) for item in items])
+ans2 = ', '.join(open(f'./input/2024/day00/input.txt', 'r').read().splitlines())
 
-print(f'Part 1: {answer1}')
-print(f'Part 2: {answer2}')
+print(f'Part 1: {ans1}')
+print(f'Part 2: {ans2}')
