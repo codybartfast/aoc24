@@ -1,7 +1,6 @@
 
 def text():
-    with open(f'./input/2024/day00/{input_name}.txt', 'r') as file:
-        return file.read().strip()
+    return open(f'./input/2024/day00/{input_name}.txt').read().strip()
 
 def lines(): return text().splitlines()
 
@@ -9,7 +8,6 @@ def parse(line):
     return line
 
 input_name = 'test1'
-
 items = [parse(line) for line in lines()]
 
 ans1 = '\n'.join([str(item) for item in items])
