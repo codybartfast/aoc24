@@ -26,7 +26,7 @@ def check_x_mas(puzzle, pos):
 def check_xmas(puzzle, remaining, pos, direction):
     if not remaining:
         return True
-    if not letter_at(puzzle, pos) == remaining[0]:
+    if letter_at(puzzle, pos) != remaining[0]:
         return False
     return check_xmas(puzzle, remaining[1:], take_step(pos, direction), direction)
 
@@ -39,7 +39,7 @@ def take_step(pos, step):
 
 def letter_at(puzzle, pos):
     col, row = pos
-    if row < 0 or row >= len(puzzle) or col < 0 or col >= len(puzzle[0]):
+    if row < 0 or row >= len(puzzle) or col < 0 or col >= len(puzzle[row]):
         return '#'
     return puzzle[row][col]
 
