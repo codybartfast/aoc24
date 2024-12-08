@@ -7,7 +7,8 @@ def main():
             if hasattr(items, '__iter__') and not isinstance(items, str) else items)
     ans2 = ', '.join(open(f'./input/2024/day00/input.txt', 'r').read().splitlines())
 
-    print(f'Part 1: {ans1}\nPart 2: {ans2}')
+    print(f'Part 1: {ans1}')
+    print(f'Part 2: {ans2}')
 
 def parse(line):
     return line
