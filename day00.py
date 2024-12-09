@@ -3,7 +3,6 @@ INPUT = 'test1'
 def main():
     items = [parse(line) for line in lines()]
 
-    # check if seq
     ans1 = '\n'.join([str(item) for item in items])
     ans2 = ', '.join(open(f'./input/2024/day00/input.txt', 'r').read().splitlines())
 
