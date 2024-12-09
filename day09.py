@@ -54,8 +54,7 @@ def main():
     ans1 = checksum(disk)
 
     sections = init_sections(map)
-    file_count = len(map) // 2
-    for file_id in range(file_count, -1, -1):
+    for file_id in range(len(map) // 2, -1, -1):
         move_file(sections, file_id)
 
     disk2 = []
@@ -64,6 +63,7 @@ def main():
             disk2 += [file.id] * file.size
         disk2 += [None] * section.free_space
 
+    # print(disk2)
     ans2 = checksum(disk2)
 
     print(f'Part 1: {ans1}')
