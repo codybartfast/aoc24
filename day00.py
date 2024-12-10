@@ -1,20 +1,21 @@
+from stocking import *
+
 INPUT = 'test1'
 
-def main():
-    items = [parse(line) for line in lines()]
+def solve():
+    x = [parse(line) for line in lines()]
 
-    ans1 = ('\n'.join([str(item) for item in items])
-            if hasattr(items, '__iter__') and not isinstance(items, str) else items)
+    ans1 = ('\n'.join([str(item) for item in x])
+            if hasattr(x, '__iter__') and not isinstance(x, str) else x)
     ans2 = ', '.join(open(f'./input/2024/day00/input.txt', 'r').read().splitlines())
 
-    print(f'Part 1: {ans1}\nPart 2: {ans2}')
+    print(f'Part 1: {ans1}')
+    print(f'Part 2: {ans2}')
 
 def parse(line):
     return line
 
-def lines(): return read().splitlines()
+def lines():
+    return open(f'./input/2024/day00/{INPUT}.txt').read().strip().splitlines()
 
-def read():
-    return open(f'./input/2024/day00/{INPUT}.txt').read().strip()
-
-main()
+solve()
