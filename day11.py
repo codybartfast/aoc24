@@ -1,55 +1,50 @@
-from stocking import *
+from stocking import clockit
 
 INPUT = 'input'
 
 
 def solve():
-    stones = lines()[0].split()
-    ans1 = sum(count_25(stone) for stone in stones)
-    ans2 = sum(count_75(stone) for stone in stones)
+    stones = read().split()
 
+    ans1 = sum(count_stones_after(stone, 25) for stone in stones)
     print(f'Part 1: {ans1}')
+
+    ans2 = sum(count_stones_after(stone, 75) for stone in stones)
     print(f'Part 2: {ans2}')
 
 
-def count_75(stone):
-    return sum(count_50(stone) for stone in blink_25(stone))
+def count_stones_after(stone, blinks, counts={}):
+    key = (stone, blinks)
+    if key not in counts:
+        stones_5 = blink(stone, 5)
+        if blinks == 5:
+            count = sum(1 for s in stones_5)
+        else:
+            count = sum(count_stones_after(stone, blinks - 5)
+                        for stone in stones_5)
+        counts[key] = count
+    return counts[key]
 
 
-def count_50(stone, counts={}):
-    if stone not in counts:
-        counts[stone] = sum(count_25(stone) for stone in blink_25(stone))
-    return counts[stone]
-
-
-def count_25(stone, counts={}):
-    if stone not in counts:
-        counts[stone] = len(list(blink_25(stone)))
-    return counts[stone]
-
-
-def blink_25(stone):
+def blink(stone, n):
     stones = [stone]
-    for _ in range(25):
-        stones = (new_stone for stone in stones for new_stone in blink_1(stone))
+    for _ in range(n):
+        stones = (new_stone for stone in stones for new_stone in blink_once(stone))
     return stones
 
 
-def blink_1(stone):
+def blink_once(stone):
     if stone == '0': return ['1']
     if len(stone) % 2 == 0:
         half_len = len(stone) // 2
-        return [stone[0:half_len].lstrip('0') or '0', stone[half_len:].lstrip('0') or '0']
+        return [stone[:half_len].lstrip('0') or '0',
+                stone[half_len:].lstrip('0') or '0']
     else:
         return [str(int(stone) * 2024)]
 
 
-def parse(line):
-    return line
+def read():
+    return open(f'./input/2024/day11/{INPUT}.txt').read().strip()
 
 
-def lines():
-    return open(f'./input/2024/day11/{INPUT}.txt').read().strip().splitlines()
-
-
-solve()
+clockit(solve)

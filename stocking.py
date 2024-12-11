@@ -16,3 +16,9 @@ class Grid:
             for dx, dy in self.adjacent_directions
             if (value := self.value((adj_x := x + dx), (adj_y := y + dy)))
                is not None]
+
+
+def clockit(action, repeat=1):
+    from timeit import timeit
+    time = timeit(action, number=repeat)
+    print(f"\n'{action.__name__}' took {(time / repeat):.2f} seconds")
