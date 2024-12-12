@@ -6,17 +6,22 @@ class Grid:
         self.height = len(rows)
         self.width = len(rows[0])
 
-    def value(self, x, y):
+    def get(self, x, y):
         if y >= 0 and y < self.height and x >= 0 and x < self.width:
             return self.rows[y][x]
 
-    def adjacent(self, x, y):
+    def adjacent(self, pos):
+        x, y = pos
         return [
             ((adj_x, adj_y), value)
             for dx, dy in self.adjacent_directions
-            if (value := self.value((adj_x := x + dx), (adj_y := y + dy)))
+            if (value := self.get((adj_x := x + dx), (adj_y := y + dy)))
                is not None]
 
+    def __iter__(self):
+        for y in range(self.height):
+            for x in range(self.width):
+                yield (x, y), self.get(x, y)
 
 def clockit(action, repeat=1):
     from timeit import timeit
