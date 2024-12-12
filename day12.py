@@ -1,4 +1,4 @@
-from stocking import *
+from stocking import clockit
 
 INPUT = 'input'
 
@@ -6,78 +6,87 @@ NEIGHBOUR_DELTAS = {
     (0, -1): [(-1, 0), (1, 0)],
     (1, 0): [(0, -1), (0, 1)],
     (0, 1): [(-1, 0), (1, 0)],
-    (-1, 0): [(0, -1), (0, 1)],
-}
+    (-1, 0): [(0, -1), (0, 1)], }
 
 
 def solve():
-    garden = Grid(lines())
-    x = [r for r in find_regions(garden, {next(iter(garden))})]
+    ans1, ans2 = 0, 0
 
-    ans1 = 0
-    for region in x:
-        ans1 += len(region[1]) * perimeter(region)
+    for region in find_regions(Grid(lines())):
+        perimeter = set(find_perimeter(region))
+        ans1 += len(region) * len(perimeter)
+        ans2 += len(region) * count_edges(perimeter)
+
     print(f'Part 1: {ans1}')
-
-    ans2 = 0
-    for region in x:
-        plant = region[0]
-        boarder_plants = find_boarder_plants(region)
-        edge_count = 0
-        while boarder_plants:
-            edge_count += 1
-            (pos, dir) = boarder_plants.pop()
-            for delta in NEIGHBOUR_DELTAS[dir]:
-                (x, y) = pos
-                while (neighbour := ((x := x + delta[0], y := y + delta[1]), dir)) in boarder_plants:
-                    boarder_plants.remove(neighbour)
-
-        ans2 += len(region[1]) * edge_count
     print(f'Part 2: {ans2}')
 
 
-def find_boarder_plants(region):
-    (plant, locs) = region
-    edge = set()
-    for x, y in locs:
-        for (dx, dy) in [(0, -1), (1, 0), (0, 1), (-1, 0)]:
-            adjacent = (x + dx, y + dy)
-            if adjacent not in locs:
-                edge.add(((x, y), (dx, dy)))
-    return edge
+def count_edges(perimeter):
+    count = 0
+    while perimeter:
+        count += 1
+        pos, direction = perimeter.pop()
+        for dx, dy in NEIGHBOUR_DELTAS[direction]:
+            x, y = pos
+            while ((neighbour := ((x := x + dx, y := y + dy), direction))
+                   in perimeter):
+                perimeter.remove(neighbour)
+    return count
 
 
-def perimeter(region):
-    (_, locs) = region
-    length = 0
-    for x, y in locs:
-        adjacents = [(x + dx, y + dy) for (dx, dy) in [(0, -1), (1, 0), (0, 1), (-1, 0)]]
-        length += sum(1 for adjacent in adjacents if adjacent not in locs)
-    return length
+def find_perimeter(region):
+    return (
+        ((x, y), (dx, dy))
+        for x, y in region
+        for dx, dy in [(0, -1), (1, 0), (0, 1), (-1, 0)]
+        if (x + dx, y + dy) not in region)
 
 
-def find_regions(garden, unexplored):
-    explored = set()
+def find_regions(garden):
+    unexplored = set(garden)
     while unexplored:
-        (pos, plant) = unexplored.pop()
+        pos, plant = unexplored.pop()
         region = {pos}
-        unexpanded = {pos}
+        unexpanded = [pos]
         while unexpanded:
             pos = unexpanded.pop()
-            for (adj_pos, adj_plant) in garden.adjacent(pos):
-                if adj_pos not in region:
-                    if adj_plant == plant and adj_pos not in region:
-                        region.add(adj_pos)
-                        unexpanded.add(adj_pos)
-                        unexplored.discard((adj_pos, adj_plant))
-                    elif adj_pos not in explored:
-                        unexplored.add((adj_pos, adj_plant))
-            explored.add(pos)
-        yield (plant, region)
+            for adj_pos, adj_plant in garden.adjacent(pos):
+                if adj_plant == plant and adj_pos not in region:
+                    region.add(adj_pos)
+                    unexpanded.append(adj_pos)
+                    unexplored.remove((adj_pos, plant))
+        yield region
 
 
 def lines():
     return open(f'./input/2024/day12/{INPUT}.txt').read().strip().splitlines()
 
 
-solve()
+class Grid:
+    adjacent_directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+
+    def __init__(self, rows):
+        self.rows = rows
+        self.height = len(rows)
+        self.width = len(rows[0])
+
+    def get(self, x, y):
+        if 0 <= y < self.height and 0 <= x < self.width:
+            return self.rows[y][x]
+
+    def adjacent(self, pos):
+        x, y = pos
+        return [
+            ((adj_x, adj_y), value)
+            for dx, dy in self.adjacent_directions
+            if (value := self.get((adj_x := x + dx), (adj_y := y + dy)))
+               is not None]
+
+    def __iter__(self):
+        return (
+            ((x, y), self.rows[y][x])
+            for y in range(self.height)
+            for x in range(self.width))
+
+
+clockit(solve)
