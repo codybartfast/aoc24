@@ -1,3 +1,5 @@
+from stocking import clockit
+
 INPUT = 'input'
 
 class File:
@@ -137,4 +139,4 @@ def init_disk(map):
 def read():
     return open(f'./input/2024/day09/{INPUT}.txt').read().strip()
 
-main()
+clockit(main)
