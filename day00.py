@@ -18,4 +18,4 @@ def parse(line):
 def lines():
     return open(f'./input/2024/day00/{INPUT}.txt').read().strip().splitlines()
 
-solve()
+clockit(solve)

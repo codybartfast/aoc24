@@ -93,5 +93,6 @@ class DoublyLinkedList:
 
 def clockit(action, repeat=1):
     from timeit import timeit
-    time = timeit(action, number=repeat)
-    print(f"\n'{action.__name__}' took {(time / repeat):.3f} seconds")
+    time = timeit(action, number=repeat)/repeat
+    places = 3 if time >= 0.001 else 6
+    print(f"\n'{action.__name__}' took {time:.{places}f} seconds")
