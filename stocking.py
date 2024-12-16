@@ -9,6 +9,9 @@ class Grid:
     def __getitem__(self, coord):
         return self.rows[coord[1]][coord[0]]
 
+    def __setitem__(self, key, value):
+        self.rows[key[1]][key[0]] = value
+
     def get(self, coord):
         x, y = coord
         if 0 <= y < self.height and 0 <= x < self.width:
@@ -17,12 +20,17 @@ class Grid:
     def is_free(self, coord):
         return self[coord] != '#'
 
+    def next(self, coord, direction):
+        x, y = coord
+        dx, dy = direction
+        return (x := x + dx, y := y + dy), self.get((x, y))
+
     def adjacent(self, coord):
         x, y = coord
         return [
-            ((adj_x, adj_y), value)
-            for dx, dy in self.adjacent_directions
-            if (value := self.get(((adj_x := x + dx), (adj_y := y + dy))))
+            coord_item
+            for direction in self.adjacent_directions
+            if (coord_item := self.next(coord, direction))
                is not None]
 
     def find(self, target):
@@ -37,7 +45,8 @@ class Grid:
             for (x, item) in enumerate(row))
 
     def __str__(self):
-        return '\n'.join(self.rows)
+        return '\n'.join([''.join(row) for row in self.rows])
+
 
 class DoublyLinkedList:
     class Item:
@@ -103,8 +112,9 @@ class DoublyLinkedList:
         item_strings = [str(item) for item in self]
         return ', '.join(item_strings)
 
+
 def clockit(action, repeat=1):
     from timeit import timeit
-    time = timeit(action, number=repeat)/repeat
+    time = timeit(action, number=repeat) / repeat
     places = 3 if time >= 0.001 else 6
     print(f"\n'{action.__name__}' took {time:.{places}f} seconds")
