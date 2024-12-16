@@ -28,14 +28,11 @@ def navigate(maze, end, history, future_herd):
     finishers = []
     while future_herd:
         deer = future_herd.popleft()
-        while len(next_herd := find_next_herd(maze, deer)) == 1:
+        if len(next_herd := find_next_herd(maze, deer)) == 1:
             deer = next_herd[0]
             if deer.coord == end:
                 finishers.append(deer)
-            break
-        if not next_herd:
-            continue
-        for next_deer in next_herd:
+        for next_deer in find_next_herd(maze, deer):
             if deer.coord == end:
                 finishers.append(deer)
                 continue
