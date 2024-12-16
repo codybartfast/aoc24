@@ -1,30 +1,42 @@
 class Grid:
-    adjacent_directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+    adjacent_directions = (0, -1), (1, 0), (0, 1), (-1, 0)
 
     def __init__(self, rows):
         self.rows = rows
         self.height = len(rows)
         self.width = len(rows[0])
 
-    def get(self, x, y):
+    def __getitem__(self, coord):
+        return self.rows[coord[1]][coord[0]]
+
+    def get(self, coord):
+        x, y = coord
         if 0 <= y < self.height and 0 <= x < self.width:
             return self.rows[y][x]
 
-    def adjacent(self, pos):
-        x, y = pos
+    def is_free(self, coord):
+        return self[coord] != '#'
+
+    def adjacent(self, coord):
+        x, y = coord
         return [
             ((adj_x, adj_y), value)
             for dx, dy in self.adjacent_directions
-            if (value := self.get((adj_x := x + dx), (adj_y := y + dy)))
+            if (value := self.get(((adj_x := x + dx), (adj_y := y + dy))))
                is not None]
+
+    def find(self, target):
+        for coord, val in self:
+            if val == target:
+                return coord
 
     def __iter__(self):
         return (
-            ((x, y), self.rows[y][x])
-            for y in range(self.height)
-            for x in range(self.width))
+            ((x, y), item)
+            for (y, row) in enumerate(self.rows)
+            for (x, item) in enumerate(row))
 
-    def __repr__(self):
+    def __str__(self):
         return '\n'.join(self.rows)
 
 class DoublyLinkedList:
