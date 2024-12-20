@@ -12,9 +12,13 @@ class Grid:
     def __setitem__(self, key, value):
         self.rows[key[1]][key[0]] = value
 
-    def get(self, coord):
+    def inbounds(self, coord):
         x, y = coord
-        if 0 <= y < self.height and 0 <= x < self.width:
+        return 0 <= y < self.height and 0 <= x < self.width
+
+    def get(self, coord):
+        if self.inbounds(coord):
+            x, y = coord
             return self.rows[y][x]
 
     def is_free(self, coord):
@@ -37,6 +41,8 @@ class Grid:
         for coord, val in self:
             if val == target:
                 return coord
+
+
 
     def __iter__(self):
         return (
